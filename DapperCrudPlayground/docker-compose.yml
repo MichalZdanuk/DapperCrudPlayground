@@ -1,0 +1,9 @@
+services:
+  dappercrudplaygrounddb:
+    image: mcr.microsoft.com/mssql/server
+
+  dappercrudplayground.api:
+    image: ${DOCKER_REGISTRY-}dappercrudplaygroundapi
+    build:
+      context: .
+      dockerfile: src/DapperCrudPlayground.API/Dockerfile
