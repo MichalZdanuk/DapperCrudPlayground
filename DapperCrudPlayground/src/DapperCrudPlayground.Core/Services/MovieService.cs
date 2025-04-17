@@ -17,7 +17,7 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 			VALUES (@Id, @Title, @ReleaseYear)
 			""", new { id = Guid.NewGuid(), Title = createMovieDto.Title, ReleaseYear = createMovieDto.ReleaseYear });
 
-		return new ActionResult<MovieDto>(true, null);
+		return new ActionResult<Movie>(true, null);
 	}
 
 	public async Task<ActionResult<Movie>> DeleteAsync(Guid id)
@@ -28,12 +28,14 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		return new ActionResult<Movie>(result > 0, null);
 	}
 
-	public async Task<ActionResult<IEnumerable<Movie>>> GetAllAsync()
+	public async Task<ActionResult<IEnumerable<MovieDto>>> GetAllAsync()
 	{
 		using var dbConnection = await connectionFactory.CreateConnectionAsync();
 		var movies = await dbConnection.QueryAsync<Movie>("SELECT * FROM movies");
 
-		return new ActionResult<IEnumerable<Movie>>(true, movies);
+		var movieDtos = movies.Adapt<IEnumerable<MovieDto>>();
+
+		return new ActionResult<IEnumerable<MovieDto>>(true, movieDtos);
 	}
 
 	public async Task<ActionResult<MovieDto>> GetByIdAsync(Guid id)
@@ -49,7 +51,7 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		return new ActionResult<MovieDto>(true, movieDto);
 	}
 
-	public async Task<ActionResult<Movie>> UpdateAsync(Guid id, Movie movie)
+	public async Task<ActionResult<Movie>> UpdateAsync(Guid id, UpdateMovieDto updateMovieDto)
 	{
 		using var dbConntection = await connectionFactory.CreateConnectionAsync();
 		var existingMovie = await dbConntection.QuerySingleOrDefaultAsync<Movie>(
@@ -65,7 +67,7 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		await dbConntection.ExecuteAsync(
 			"""
 			UPDATE movies SET Title=@Title, ReleaseYear=@ReleaseYear WHERE Id=@Id
-			""", movie);
+			""", new { Title = updateMovieDto.Title, ReleaseYear = updateMovieDto.ReleaseYear, Id = id});
 
 		return new ActionResult<Movie>(true, null);
 	}

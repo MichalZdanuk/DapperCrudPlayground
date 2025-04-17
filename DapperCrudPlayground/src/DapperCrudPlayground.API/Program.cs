@@ -62,9 +62,9 @@ app.MapDelete("/movies/{id}", async (IMovieService movieService, Guid id) =>
 	return Results.Accepted();
 });
 
-app.MapPut("/movies/{id}", async (IMovieService movieService, Guid id, Movie movie) =>
+app.MapPut("/movies/{id}", async (IMovieService movieService, Guid id, UpdateMovieDto updateMovieDto) =>
 {
-	var result = await movieService.UpdateAsync(id, movie);
+	var result = await movieService.UpdateAsync(id, updateMovieDto);
 
 	if (!result.IsSuccess)
 	{
