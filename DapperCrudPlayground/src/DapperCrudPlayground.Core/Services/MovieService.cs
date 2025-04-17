@@ -18,9 +18,12 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		return new ActionResult<Movie>(true, null);
 	}
 
-	public Task<ActionResult<Movie>> DeleteAsync(Guid id)
+	public async Task<ActionResult<Movie>> DeleteAsync(Guid id)
 	{
-		throw new NotImplementedException();
+		using var dbConnection = await connectionFactory.CreateConnectionAsync();
+		var result = await dbConnection.ExecuteAsync("DELETE FROM movies WHERE Id=@id", new { id });
+
+		return new ActionResult<Movie>(result > 0, null);
 	}
 
 	public async Task<ActionResult<IEnumerable<Movie>>> GetAllAsync()
