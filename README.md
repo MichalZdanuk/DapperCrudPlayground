@@ -1,20 +1,43 @@
 # DapperCrudPlayground
-.NET minimal API utilizing Dapper for connection to DB (my first contact with Dapper). Idea was to create very simple API and test basic posssibilities. Writing API witout usage of any LLM, just basing on previous projects, StackOverflow, blog posts and documentation.
 
-### 🏛️ Solution
-Lighweight minimal API written in clean yet very simple way. Endpoints utilize service. Movie Servies uses abstraction that allows to create dbConnection using Dapper. In service implementation resides business logic for performing CRUD operations. Also used Mapster for very simple DTO -> model and model -> DTO mappings.
+A minimal .NET API utilizing **Dapper** for database access — my first hands-on experience with Dapper.  
+The goal was to build a very simple CRUD API to explore the basic capabilities of this lightweight ORM.
 
-List of endpoints:
-- *GET /movies* = retrieves all movies list
-- *GET /movies/id* = retrieves specific movie, identified by unique GUID
-- *POST /movies* = adds movie to db
-- *PUT /movies/id* = modifies specified movie
-- *DELETE /movies/id* = deletes specified movie
+All code was written without the use of any large language models — just good old-fashioned research through documentation, previous projects, StackOverflow, and blog posts.
+
+---
+
+### 🏛️ Solution Overview
+
+A lightweight, minimal API written in a clean and straightforward way. Endpoints are built on top of a service layer.
+
+- The `MovieService` uses an abstraction for creating `DbConnection` instances with Dapper.
+- Business logic for CRUD operations is encapsulated in the service.
+- Mapster is used for simple object mapping between DTOs and domain models.
+
+---
+
+### 📚 API Endpoints
+
+| Method | Endpoint         | Description                         |
+|--------|------------------|-------------------------------------|
+| GET    | `/movies`        | Retrieves the full list of movies  |
+| GET    | `/movies/{id}`   | Retrieves a specific movie by GUID |
+| POST   | `/movies`        | Adds a new movie                   |
+| PUT    | `/movies/{id}`   | Updates an existing movie          |
+| DELETE | `/movies/{id}`   | Deletes a movie by ID              |
+
+---
 
 ### 🛠️ Technologies Used
+- .NET 8
 - Dapper
 - Mapster
-- MinimalAPI
+- Minimal API
+- Docker
+- MSSQL
+
+---
 
 ### ⚙️ Setup Instructions
 
@@ -31,9 +54,11 @@ docker-compose up -d
 
 Aplication is available on: https://localhost:6000 and https://localhost:6060
 
+---
+
 ### 🔍 References and research
 While developing project I found usefull these resources:
-- [Nick Chapsas tutorial on Getting Started with Dapper in .NET](https://www.youtube.com/watch?v=F1ONxvjdLlc&ab_channel=NickChapsas) - inspired me to build this project
-- [Blog post about .NET minimal APIs on Medium](https://medium.com/codenx/minimal-apis-in-net-8-a-simplified-approach-to-build-services-eb50df56819f)
-- [Documentation page on setting up Dapper](https://www.learndapper.com/database-providers)
-- [Documentation page on executing commands](https://www.learndapper.com/non-query)
+- 🎥 [Nick Chapsas tutorial on Getting Started with Dapper in .NET](https://www.youtube.com/watch?v=F1ONxvjdLlc&ab_channel=NickChapsas) - inspired me to build this project
+- ✍️ [Blog post about .NET minimal APIs on Medium](https://medium.com/codenx/minimal-apis-in-net-8-a-simplified-approach-to-build-services-eb50df56819f)
+- 📖 [Documentation page on setting up Dapper](https://www.learndapper.com/database-providers)
+- 📖 [Documentation page on executing commands](https://www.learndapper.com/non-query)
