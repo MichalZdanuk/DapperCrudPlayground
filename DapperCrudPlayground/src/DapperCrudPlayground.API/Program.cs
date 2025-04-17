@@ -3,7 +3,7 @@ using DapperCrudPlayground.Core;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddCore();
+builder.Services.AddCore(builder.Configuration);
 
 var app = builder.Build();
 

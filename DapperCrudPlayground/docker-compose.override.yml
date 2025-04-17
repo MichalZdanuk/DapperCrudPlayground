@@ -13,6 +13,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - DbConnectionString=dappercrudplaygrounddb;Database=MoviesDb;User Id=sa;Password=HardPassword12345678abc!;Encrypt=False;TrustServerCertificate=True
     depends_on:
       - dappercrudplaygrounddb
     ports:
