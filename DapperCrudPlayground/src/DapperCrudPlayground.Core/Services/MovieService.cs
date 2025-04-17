@@ -1,21 +1,23 @@
 ﻿using Dapper;
 using DapperCrudPlayground.Core.Database;
+using DapperCrudPlayground.Core.DTO;
 using DapperCrudPlayground.Core.Models;
+using Mapster;
 
 namespace DapperCrudPlayground.Core.Services;
 public class MovieService(IDbConnectionFactory connectionFactory)
 	: IMovieService
 {
-	public async Task<ActionResult<Movie>> AddAsync(Movie movie)
+	public async Task<ActionResult<Movie>> AddAsync(CreateMovieDto createMovieDto)
 	{
 		using var dbConnection = await connectionFactory.CreateConnectionAsync();
 		await dbConnection.ExecuteAsync(
 			"""
 			INSERT INTO movies (id, title, releaseYear)
 			VALUES (@Id, @Title, @ReleaseYear)
-			""", movie);
+			""", new { id = Guid.NewGuid(), Title = createMovieDto.Title, ReleaseYear = createMovieDto.ReleaseYear });
 
-		return new ActionResult<Movie>(true, null);
+		return new ActionResult<MovieDto>(true, null);
 	}
 
 	public async Task<ActionResult<Movie>> DeleteAsync(Guid id)
@@ -34,7 +36,7 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		return new ActionResult<IEnumerable<Movie>>(true, movies);
 	}
 
-	public async Task<ActionResult<Movie>> GetByIdAsync(Guid id)
+	public async Task<ActionResult<MovieDto>> GetByIdAsync(Guid id)
 	{
 		using var dbConnection = await connectionFactory.CreateConnectionAsync();
 		var movie = await dbConnection.QuerySingleOrDefaultAsync<Movie>(
@@ -42,7 +44,9 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 			SELECT * FROM movies WHERE Id=@id
 			""", new { id });
 
-		return new ActionResult<Movie>(true,  movie);
+		var movieDto = movie.Adapt<MovieDto>();
+
+		return new ActionResult<MovieDto>(true, movieDto);
 	}
 
 	public async Task<ActionResult<Movie>> UpdateAsync(Guid id, Movie movie)

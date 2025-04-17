@@ -1,4 +1,5 @@
 using DapperCrudPlayground.Core;
+using DapperCrudPlayground.Core.DTO;
 using DapperCrudPlayground.Core.Models;
 using DapperCrudPlayground.Core.Services;
 
@@ -18,9 +19,9 @@ app.MapGet("/test", () =>
     return TypedResults.Ok("test");
 });
 
-app.MapPost("/movies", async (IMovieService movieService, Movie movie) =>
+app.MapPost("/movies", async (IMovieService movieService, CreateMovieDto createMovieDto) =>
 {
-	var creationResult = await movieService.AddAsync(movie);
+	var creationResult = await movieService.AddAsync(createMovieDto);
 
 	if (!creationResult.IsSuccess)
 	{
