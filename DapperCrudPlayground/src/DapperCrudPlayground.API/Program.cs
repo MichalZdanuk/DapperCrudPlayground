@@ -61,4 +61,16 @@ app.MapDelete("/movies/{id}", async (IMovieService movieService, Guid id) =>
 	return Results.Accepted();
 });
 
+app.MapPut("/movies/{id}", async (IMovieService movieService, Guid id, Movie movie) =>
+{
+	var result = await movieService.UpdateAsync(id, movie);
+
+	if (!result.IsSuccess)
+	{
+		return Results.BadRequest();
+	}
+
+	return Results.Accepted();
+});
+
 app.Run();

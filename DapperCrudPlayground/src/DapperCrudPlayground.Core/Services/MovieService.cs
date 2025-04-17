@@ -45,8 +45,24 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		return new ActionResult<Movie>(true,  movie);
 	}
 
-	public Task<ActionResult<Movie>> UpdateAsync(Guid id, Movie movie)
+	public async Task<ActionResult<Movie>> UpdateAsync(Guid id, Movie movie)
 	{
-		throw new NotImplementedException();
+		using var dbConntection = await connectionFactory.CreateConnectionAsync();
+		var existingMovie = await dbConntection.QuerySingleOrDefaultAsync<Movie>(
+			"""
+			SELECT * FROM movies WHERE Id=@id
+			""", new { id });
+
+		if (existingMovie is null)
+		{
+			return new ActionResult<Movie>(false, null);
+		}
+
+		await dbConntection.ExecuteAsync(
+			"""
+			UPDATE movies SET Title=@Title, ReleaseYear=@ReleaseYear WHERE Id=@Id
+			""", movie);
+
+		return new ActionResult<Movie>(true, null);
 	}
 }
