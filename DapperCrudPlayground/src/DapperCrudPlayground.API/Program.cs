@@ -1,8 +1,3 @@
-using DapperCrudPlayground.API;
-using DapperCrudPlayground.Core;
-using DapperCrudPlayground.Core.DTO;
-using DapperCrudPlayground.Core.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
