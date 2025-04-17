@@ -3,6 +3,7 @@ using DapperCrudPlayground.Core.Database;
 using DapperCrudPlayground.Core.DTO;
 using DapperCrudPlayground.Core.Models;
 using Mapster;
+using System.Net;
 
 namespace DapperCrudPlayground.Core.Services;
 public class MovieService(IDbConnectionFactory connectionFactory)
@@ -17,7 +18,7 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 			VALUES (@Id, @Title, @ReleaseYear)
 			""", new { id = Guid.NewGuid(), Title = createMovieDto.Title, ReleaseYear = createMovieDto.ReleaseYear });
 
-		return new ActionResult<Movie>(true, null);
+		return new ActionResult<Movie>(true, HttpStatusCode.Created, null);
 	}
 
 	public async Task<ActionResult<Movie>> DeleteAsync(Guid id)
@@ -25,7 +26,9 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		using var dbConnection = await connectionFactory.CreateConnectionAsync();
 		var result = await dbConnection.ExecuteAsync("DELETE FROM movies WHERE Id=@id", new { id });
 
-		return new ActionResult<Movie>(result > 0, null);
+		return result > 0
+			? new ActionResult<Movie>(true, HttpStatusCode.Accepted, null)
+			: new ActionResult<Movie>(false, HttpStatusCode.NotFound, null);
 	}
 
 	public async Task<ActionResult<IEnumerable<MovieDto>>> GetAllAsync()
@@ -35,7 +38,7 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 
 		var movieDtos = movies.Adapt<IEnumerable<MovieDto>>();
 
-		return new ActionResult<IEnumerable<MovieDto>>(true, movieDtos);
+		return new ActionResult<IEnumerable<MovieDto>>(true, HttpStatusCode.OK, movieDtos);
 	}
 
 	public async Task<ActionResult<MovieDto>> GetByIdAsync(Guid id)
@@ -46,9 +49,14 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 			SELECT * FROM movies WHERE Id=@id
 			""", new { id });
 
+		if (movie is null)
+		{
+			return new ActionResult<MovieDto>(false, HttpStatusCode.NotFound, null);
+		}
+
 		var movieDto = movie.Adapt<MovieDto>();
 
-		return new ActionResult<MovieDto>(true, movieDto);
+		return new ActionResult<MovieDto>(true, HttpStatusCode.OK, movieDto);
 	}
 
 	public async Task<ActionResult<Movie>> UpdateAsync(Guid id, UpdateMovieDto updateMovieDto)
@@ -61,7 +69,7 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 
 		if (existingMovie is null)
 		{
-			return new ActionResult<Movie>(false, null);
+			return new ActionResult<Movie>(false, HttpStatusCode.NotFound, null);
 		}
 
 		await dbConntection.ExecuteAsync(
@@ -69,6 +77,6 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 			UPDATE movies SET Title=@Title, ReleaseYear=@ReleaseYear WHERE Id=@Id
 			""", new { Title = updateMovieDto.Title, ReleaseYear = updateMovieDto.ReleaseYear, Id = id});
 
-		return new ActionResult<Movie>(true, null);
+		return new ActionResult<Movie>(true, HttpStatusCode.Accepted, null);
 	}
 }
