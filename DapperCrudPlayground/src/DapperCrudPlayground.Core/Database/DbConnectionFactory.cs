@@ -5,7 +5,7 @@ namespace DapperCrudPlayground.Core.Database;
 public class DbConnectionFactory(string connectionString)
 	: IDbConnectionFactory
 {
-	public async Task<IDbConnection> CreateCinnectionAsync(CancellationToken token = default)
+	public async Task<IDbConnection> CreateConnectionAsync(CancellationToken token = default)
 	{
 		var connection = new SqlConnection(connectionString);
 		await connection.OpenAsync(token);
@@ -15,5 +15,5 @@ public class DbConnectionFactory(string connectionString)
 
 public interface IDbConnectionFactory
 {
-	Task<IDbConnection> CreateCinnectionAsync(CancellationToken token = default);
+	Task<IDbConnection> CreateConnectionAsync(CancellationToken token = default);
 }

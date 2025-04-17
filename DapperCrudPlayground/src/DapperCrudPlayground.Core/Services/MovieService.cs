@@ -1,12 +1,21 @@
-﻿using DapperCrudPlayground.Core.Models;
+﻿using Dapper;
+using DapperCrudPlayground.Core.Database;
+using DapperCrudPlayground.Core.Models;
 
 namespace DapperCrudPlayground.Core.Services;
-public class MovieService
+public class MovieService(IDbConnectionFactory connectionFactory)
 	: IMovieService
 {
-	public Task<ActionResult<Movie>> AddAsync(Movie movie)
+	public async Task<ActionResult<Movie>> AddAsync(Movie movie)
 	{
-		throw new NotImplementedException();
+		using var dbConnection = await connectionFactory.CreateConnectionAsync();
+		await dbConnection.ExecuteAsync(
+			"""
+			INSERT INTO movies (id, title, releaseYear)
+			VALUES (@Id, @Title, @ReleaseYear)
+			""", movie);
+
+		return new ActionResult<Movie>(true, null);
 	}
 
 	public Task<ActionResult<Movie>> DeleteAsync(Guid id)
