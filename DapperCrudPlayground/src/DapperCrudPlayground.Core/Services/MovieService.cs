@@ -23,9 +23,12 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		throw new NotImplementedException();
 	}
 
-	public Task<ActionResult<IEnumerable<Movie>>> GetAllAsync()
+	public async Task<ActionResult<IEnumerable<Movie>>> GetAllAsync()
 	{
-		throw new NotImplementedException();
+		using var dbConnection = await connectionFactory.CreateConnectionAsync();
+		var movies = await dbConnection.QueryAsync<Movie>("SELECT * FROM movies");
+
+		return new ActionResult<IEnumerable<Movie>>(true, movies);
 	}
 
 	public async Task<ActionResult<Movie>> GetByIdAsync(Guid id)
