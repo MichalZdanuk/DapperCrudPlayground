@@ -1,6 +1,9 @@
+using DapperCrudPlayground.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCore();
 
 var app = builder.Build();
 
