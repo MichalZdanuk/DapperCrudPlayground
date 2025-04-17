@@ -10,7 +10,7 @@ public static class DependencyInjection
 	{
 		services.AddSingleton<IDbConnectionFactory>(_ => new DbConnectionFactory(configuration["DbConnectionString"]!));
 
-		services.AddScoped<IMovieService, MovieService>();
+		services.AddSingleton<IMovieService, MovieService>();
 
 		return services;
 	}

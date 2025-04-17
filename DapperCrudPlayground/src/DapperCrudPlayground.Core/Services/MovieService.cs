@@ -4,27 +4,27 @@ namespace DapperCrudPlayground.Core.Services;
 public class MovieService
 	: IMovieService
 {
-	public Task<bool> AddAsync(Movie movie)
+	public Task<ActionResult<Movie>> AddAsync(Movie movie)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> DeleteAsync(Guid id)
+	public Task<ActionResult<Movie>> DeleteAsync(Guid id)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<IEnumerable<Movie>> GetAllAsync()
+	public Task<ActionResult<IEnumerable<Movie>>> GetAllAsync()
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<Movie?> GetByIdAsync(Guid id)
+	public Task<ActionResult<Movie>> GetByIdAsync(Guid id)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<bool> UpdateAsync(Guid id, Movie movie)
+	public Task<ActionResult<Movie>> UpdateAsync(Guid id, Movie movie)
 	{
 		throw new NotImplementedException();
 	}
