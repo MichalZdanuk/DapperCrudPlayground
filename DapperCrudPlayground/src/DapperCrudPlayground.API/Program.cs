@@ -32,6 +32,12 @@ app.MapGet("/movies", async (IMovieService movieService) =>
 	return ActionResultToResponseMapper.GetResponseResultFromActionResult(result);
 });
 
+app.MapGet("/movies/{id}/details", async (IMovieService movieService, Guid id) =>
+{
+	var result = await movieService.GetDetailsAsync(id);
+	return ActionResultToResponseMapper.GetResponseResultFromActionResult(result);
+});
+
 app.MapDelete("/movies/{id}", async (IMovieService movieService, Guid id) =>
 {
 	var result = await movieService.DeleteAsync(id);

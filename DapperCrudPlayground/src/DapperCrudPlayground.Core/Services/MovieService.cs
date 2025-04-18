@@ -14,9 +14,9 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 		using var dbConnection = await connectionFactory.CreateConnectionAsync();
 		await dbConnection.ExecuteAsync(
 			"""
-			INSERT INTO movies (id, title, releaseYear)
-			VALUES (@Id, @Title, @ReleaseYear)
-			""", new { id = Guid.NewGuid(), Title = createMovieDto.Title, ReleaseYear = createMovieDto.ReleaseYear });
+			INSERT INTO movies (id, title, director, releaseYear)
+			VALUES (@Id, @Title, @Director, @ReleaseYear)
+			""", new { id = Guid.NewGuid(), Title = createMovieDto.Title, Director = createMovieDto.Director, ReleaseYear = createMovieDto.ReleaseYear });
 
 		return new ActionResult<Movie>(true, HttpStatusCode.Created, null);
 	}
@@ -44,19 +44,37 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 	public async Task<ActionResult<MovieDto>> GetByIdAsync(Guid id)
 	{
 		using var dbConnection = await connectionFactory.CreateConnectionAsync();
-		var movie = await dbConnection.QuerySingleOrDefaultAsync<Movie>(
+		var movieRow = await dbConnection.QuerySingleOrDefaultAsync(
 			"""
-			SELECT * FROM movies WHERE Id=@id
+			SELECT Id, Title FROM movies WHERE Id=@id
 			""", new { id });
 
-		if (movie is null)
+		if (movieRow is null)
 		{
 			return new ActionResult<MovieDto>(false, HttpStatusCode.NotFound, null);
 		}
 
-		var movieDto = movie.Adapt<MovieDto>();
+		var movieDto = new MovieDto(movieRow.Id, movieRow.Title);
 
 		return new ActionResult<MovieDto>(true, HttpStatusCode.OK, movieDto);
+	}
+
+	public async Task<ActionResult<MovieDetailsDto>> GetDetailsAsync(Guid id)
+	{
+		using var dbConnection = await connectionFactory.CreateConnectionAsync();
+		var movie = await dbConnection.QuerySingleOrDefaultAsync<Movie>(
+			"""
+			SELECT * FROM movies WHERE Id=@id
+			""", new {id});
+
+		if (movie is null)
+		{
+			return new ActionResult<MovieDetailsDto>(false, HttpStatusCode.NotFound, null);
+		}
+
+		var movieDetailsDto = movie.Adapt<MovieDetailsDto>();
+
+		return new ActionResult<MovieDetailsDto>(true, HttpStatusCode.OK, movieDetailsDto);
 	}
 
 	public async Task<ActionResult<Movie>> UpdateAsync(Guid id, UpdateMovieDto updateMovieDto)
@@ -74,8 +92,8 @@ public class MovieService(IDbConnectionFactory connectionFactory)
 
 		await dbConntection.ExecuteAsync(
 			"""
-			UPDATE movies SET Title=@Title, ReleaseYear=@ReleaseYear WHERE Id=@Id
-			""", new { Title = updateMovieDto.Title, ReleaseYear = updateMovieDto.ReleaseYear, Id = id});
+			UPDATE movies SET Title=@Title, Director=@Director, ReleaseYear=@ReleaseYear WHERE Id=@Id
+			""", new { Title = updateMovieDto.Title, Director = updateMovieDto.Director, ReleaseYear = updateMovieDto.ReleaseYear, Id = id});
 
 		return new ActionResult<Movie>(true, HttpStatusCode.Accepted, null);
 	}

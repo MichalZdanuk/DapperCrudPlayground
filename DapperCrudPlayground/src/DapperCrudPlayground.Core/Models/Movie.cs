@@ -3,5 +3,6 @@ public class Movie
 {
 	public Guid Id { get; set; }
 	public string Title { get; set; } = default!;
+	public string Director { get; set; } = default!;
 	public int ReleaseYear { get; set; }
 }
