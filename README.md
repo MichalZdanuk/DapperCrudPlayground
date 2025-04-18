@@ -50,7 +50,7 @@ cd DapperCrudPlayground
 ```bash
 docker-compose up -d
 ```
-3. Connect with DB, create MoviesDb and run init.sql sccript
+3. Connect with DB, create MoviesDb and run *init.sql* sccript
 
 Aplication is available on: https://localhost:6000 and https://localhost:6060
 
