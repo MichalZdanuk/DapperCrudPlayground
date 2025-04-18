@@ -50,7 +50,10 @@ cd DapperCrudPlayground
 ```bash
 docker-compose up -d
 ```
-3. Connect with DB, create MoviesDb and run *init.sql* sccript
+3. Connect with DB, create MoviesDb and run *init.sql* script
+```bash
+sqlcmd -S localhost,1488 -U SA -P <DbPassword> -i .\DapperDemo\DapperCrudPlayground\init.sql
+```
 
 Aplication is available on: https://localhost:6000 and https://localhost:6060
 
